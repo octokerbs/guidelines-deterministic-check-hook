@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Windows/Git Bash: fix grep -P locale error
+export LC_ALL=C.UTF-8
+
 # Deterministic C# coding rules checker
 # Usage:
 #   Direct:  bash check_csharp_rules.sh path/to/File.cs
@@ -9,7 +12,11 @@ set -euo pipefail
 if [[ $# -ge 1 ]]; then
     FILE="$1"
 else
-    FILE=$(jq -r '.tool_input.file_path // empty')
+    # Parse file_path from JSON without jq (not available in Git Bash on Windows)
+    INPUT=$(cat)
+    FILE=$(echo "$INPUT" | sed -n 's/.*"file_path" *: *"\([^"]*\)".*/\1/p' | head -1)
+    # Unescape JSON backslashes (Windows paths: C:\\Users\\... → C:\Users\...)
+    FILE=$(echo "$FILE" | sed 's/\\\\/\\/g')
 fi
 
 [[ "$FILE" == *.cs && -f "$FILE" ]] || exit 0
@@ -126,10 +133,8 @@ MSG=$(printf "%s\n\n%s\n%s" "$HEADER" "$VIOLATIONS" "$FOOTER")
 if [[ $# -ge 1 ]]; then
     echo "$MSG"
 else
-    jq -n --arg ctx "$MSG" '{
-        hookSpecificOutput: {
-            hookEventName: "PostToolUse",
-            additionalContext: $ctx
-        }
-    }'
+    # Build JSON output without jq (not available in Git Bash on Windows)
+    # Escape special JSON characters in the message
+    ESCAPED_MSG=$(echo "$MSG" | sed 's/\\/\\\\/g; s/"/\\"/g' | awk '{printf "%s\\n", $0}' | sed 's/\\n$//')
+    printf '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"%s"}}\n' "$ESCAPED_MSG"
 fi

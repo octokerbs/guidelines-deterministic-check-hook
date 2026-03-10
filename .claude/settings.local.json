@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo Exit code: $?:*)",
+      "Bash(jq:*)",
+      "Bash(awk:*)",
+      "Bash(LC_ALL=C:*)",
+      "Bash(export:*)",
+      "Bash(bash:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}
