@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Tests that check_csharp_rules.sh detects all 15 deterministic violations in test_violations.cs"""
+import os
 import subprocess
 import sys
 
@@ -25,9 +26,9 @@ EXPECTED = [
 ]
 
 result = subprocess.run(
-    ["bash", SCRIPT, TEST_FILE],
+    [r"C:\Program Files\Git\usr\bin\bash.exe", SCRIPT, TEST_FILE],
     capture_output=True, text=True,
-    cwd="/home/octokerbs/guidelines-deterministic-check-hook"
+    cwd=os.path.dirname(os.path.abspath(__file__))
 )
 
 output = result.stdout

@@ -7,7 +7,9 @@
       "Bash(LC_ALL=C:*)",
       "Bash(export:*)",
       "Bash(bash:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(python test_hook.py)",
+      "Bash(cygpath -w /usr/bin/bash)"
     ]
   }
 }

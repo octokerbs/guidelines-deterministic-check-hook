@@ -58,12 +58,13 @@ MATCHES=$(grep -nP '^\s*//($|[^/])' "$FILE" || true)
 
 # ── R7: Trailing newline ────────────────────────────────────────────
 if [[ -s "$FILE" ]]; then
-    LAST_BYTE=$(tail -c 1 "$FILE" | od -An -tx1 | tr -d ' \n')
+    # Strip CR bytes so CRLF line endings don't break the check
+    LAST_BYTE=$(tr -d '\r' < "$FILE" | tail -c 1 | od -An -tx1 | tr -d ' \n')
     if [[ "$LAST_BYTE" != "0a" ]]; then
         VIOLATIONS+="[TRAILING_NEWLINE: File must end with exactly one newline]"$'\n'
         VIOLATIONS+="  File does not end with a newline"$'\n\n'
     else
-        LAST_TWO=$(tail -c 2 "$FILE" | od -An -tx1 | tr -d ' \n')
+        LAST_TWO=$(tr -d '\r' < "$FILE" | tail -c 2 | od -An -tx1 | tr -d ' \n')
         if [[ "$LAST_TWO" == "0a0a" ]]; then
             VIOLATIONS+="[TRAILING_NEWLINE: File must end with exactly one newline]"$'\n'
             VIOLATIONS+="  File has multiple trailing newlines"$'\n\n'
