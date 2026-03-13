@@ -1,8 +1,8 @@
 ## Instalacion
 
-- Copiar el directorio `hooks/` dentro de tu `.claude`
+- Copiar el directorio `hooks/` dentro de tu `.claude/`
 
-- Agregar lo siguiente a tu `settings.json` dentro de `.claude`:
+- Agregar lo siguiente a tu `settings.json` dentro de tu `.claude/`:
 ```json
   "hooks": {
     "PostToolUse": [
